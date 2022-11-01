@@ -24,6 +24,13 @@ class Quizzler extends StatelessWidget {
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
 
+  final List checkList = const [];
+
+  List checkAnswer() {
+    //checking if answer is true or false
+    //return icon
+  }
+
   @override
   _QuizPageState createState() => _QuizPageState();
 }
@@ -88,7 +95,14 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
-        //TODO: Add a Row here as your score keeper
+        Row(
+          children: const [
+            Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
+          ],
+        ),
       ],
     );
   }
