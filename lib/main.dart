@@ -34,18 +34,24 @@ class _QuizPageState extends State<QuizPage> {
 
   final List<Question> questions = [
     Question(q: 'You can lead a cow down stairs but not up stairs.', a: false),
+    Question(q: 'A slug\'s blood is green.', a: true),
     Question(
         q: 'Approximately one quarter of human bones are in the feet.',
         a: false),
-    Question(q: 'A slug\'s blood is green.', a: true),
   ];
 
-  final List<Icon> answers = const [];
+  List<Icon> answers = [];
 
-  // List checkAnswer() {
-  //checking if answer is true or false
-  //return icon in checkList
-  // }
+  Icon right = const Icon(Icons.check, color: Colors.green);
+  Icon wrong = const Icon(Icons.close, color: Colors.red);
+
+  void checkAnswer(Question question, bool userAnswer) {
+    if (question.questionAnswer == userAnswer) {
+      answers.add(right);
+    } else {
+      answers.add(wrong);
+    }
+  }
 
   void setQuestionCounter() {
     setState(() {
@@ -63,72 +69,75 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Center(
-              child: Text(
-                questions[questionCounter].questionText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 25.0,
-                  color: Colors.white,
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: Text(
+                  questions[questionCounter].questionText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 25.0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: MaterialButton(
-              textColor: Colors.white,
-              color: Colors.green,
-              child: const Text(
-                'True',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: MaterialButton(
+                textColor: Colors.white,
+                color: Colors.green,
+                child: const Text(
+                  'True',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  ),
                 ),
+                onPressed: () {
+                  checkAnswer(questions[questionCounter], true);
+                  setQuestionCounter();
+                },
               ),
-              onPressed: () {
-                setQuestionCounter();
-              },
             ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: MaterialButton(
-              color: Colors.red,
-              child: const Text(
-                'False',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: MaterialButton(
+                color: Colors.red,
+                child: const Text(
+                  'False',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
                 ),
+                onPressed: () {
+                  checkAnswer(questions[questionCounter], false);
+                  setQuestionCounter();
+                },
               ),
-              onPressed: () {
-                setQuestionCounter();
-              },
             ),
           ),
-        ),
-        Row(
-          children: const [
-            Icon(
-              Icons.check,
-              color: Colors.green,
+          Container(
+            padding: const EdgeInsets.all(10),
+            height: 50,
+            child: Row(
+              children: answers,
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
