@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:quizzler/question.dart';
+
+import 'quiz_brain.dart';
 
 void main() => runApp(const Quizzler());
+
+QuizBrain questionBank = QuizBrain();
 
 class Quizzler extends StatelessWidget {
   const Quizzler({super.key});
@@ -30,23 +33,15 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  int questionCounter = 0;
-
-  final List<Question> questions = [
-    Question(q: 'You can lead a cow down stairs but not up stairs.', a: false),
-    Question(q: 'A slug\'s blood is green.', a: true),
-    Question(
-        q: 'Approximately one quarter of human bones are in the feet.',
-        a: false),
-  ];
+  int questionNumber = 0;
 
   List<Icon> answers = [];
 
   Icon right = const Icon(Icons.check, color: Colors.green);
   Icon wrong = const Icon(Icons.close, color: Colors.red);
 
-  void checkAnswer(Question question, bool userAnswer) {
-    if (question.questionAnswer == userAnswer) {
+  void checkAnswer(int questionNumber, bool userAnswer) {
+    if (questionBank.getQuestionAnswer(questionNumber) == userAnswer) {
       answers.add(right);
     } else {
       answers.add(wrong);
@@ -55,13 +50,14 @@ class _QuizPageState extends State<QuizPage> {
 
   void setQuestionCounter() {
     setState(() {
-      if (questionCounter < questions.length - 1) {
+      if (questionNumber < questionBank.getQuestionBankLength() - 1) {
         setState(() {
-          questionCounter++;
+          questionNumber++;
         });
       } else {
         setState(() {
-          questionCounter = 0;
+          questionNumber = 0;
+          answers.clear();
         });
       }
     });
@@ -80,7 +76,7 @@ class _QuizPageState extends State<QuizPage> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  questions[questionCounter].questionText,
+                  questionBank.getQuestionText(questionNumber),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 25.0,
@@ -104,7 +100,7 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 ),
                 onPressed: () {
-                  checkAnswer(questions[questionCounter], true);
+                  checkAnswer(questionNumber, true);
                   setQuestionCounter();
                 },
               ),
@@ -123,7 +119,7 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 ),
                 onPressed: () {
-                  checkAnswer(questions[questionCounter], false);
+                  checkAnswer(questionNumber, false);
                   setQuestionCounter();
                 },
               ),
