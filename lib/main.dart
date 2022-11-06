@@ -35,32 +35,74 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   int questionNumber = 0;
 
-  List<Icon> answers = [];
+  int counterRightAnswers = 0;
+  int counterWrongAnswers = 0;
+
+  List<Icon> userAnswers = [];
 
   Icon right = const Icon(Icons.check, color: Colors.green);
   Icon wrong = const Icon(Icons.close, color: Colors.red);
 
   void checkAnswer(int questionNumber, bool userAnswer) {
     if (questionBank.getQuestionAnswer(questionNumber) == userAnswer) {
-      answers.add(right);
+      userAnswers.add(right);
+      counterRightAnswers++;
     } else {
-      answers.add(wrong);
+      userAnswers.add(wrong);
+      counterWrongAnswers++;
     }
   }
 
   void setQuestionCounter() {
-    setState(() {
-      if (questionNumber < questionBank.getQuestionBankLength() - 1) {
-        setState(() {
-          questionNumber++;
-        });
-      } else {
-        setState(() {
-          questionNumber = 0;
-          answers.clear();
-        });
-      }
-    });
+    setState(
+      () {
+        if (questionNumber < questionBank.getQuestionBankLength() - 1) {
+          setState(() {
+            questionNumber++;
+          });
+        } else {
+          setState(
+            () {
+              questionNumber = 0;
+              userAnswers.clear();
+              if (counterRightAnswers > counterWrongAnswers) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const AlertDialog(
+                    title: Center(
+                      child: Text(
+                        'WINNER',
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (context) => const AlertDialog(
+                    title: Center(
+                      child: Text(
+                        'TRY AGAIN',
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -129,7 +171,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(10),
             height: 50,
             child: Row(
-              children: answers,
+              children: userAnswers,
             ),
           ),
         ],
