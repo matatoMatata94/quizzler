@@ -10,67 +10,21 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  int questionNumber = 0;
-
-  int counterRightAnswers = 0;
-  int counterWrongAnswers = 0;
-
-  List<Icon> userAnswers = [];
-
-  Icon right = const Icon(Icons.check, color: Colors.green);
-  Icon wrong = const Icon(Icons.close, color: Colors.red);
-
-  void checkAnswer(int questionNumber, bool userAnswer) {
-    if (questionBank.getQuestionAnswer(questionNumber) == userAnswer) {
-      userAnswers.add(right);
-      counterRightAnswers++;
-    } else {
-      userAnswers.add(wrong);
-      counterWrongAnswers++;
-    }
-  }
-
-  void setQuestionCounter() {
-    if (questionNumber < questionBank.getQuestionBankLength() - 1) {
-      setState(() {
-        questionNumber++;
-      });
-    } else {
-      setState(
-        () {
-          questionNumber = 0;
-          userAnswers.clear();
-
-          //TODO: Show points
-          if (counterRightAnswers > counterWrongAnswers) {
-            showDialog(
-              context: context,
-              //win
-              builder: (context) => resultDialog(true),
-            );
-          } else {
-            showDialog(
-                context: context,
-                //lose
-                builder: (context) => resultDialog(false));
-          }
-        },
-      );
-    }
-  }
-
-  AlertDialog resultDialog(bool win) {
-    return AlertDialog(
-      title: Center(
-        child: Text(
-          win ? 'WINNER' : 'TRY AGAIN',
-          style: const TextStyle(
-            fontSize: 50,
-            fontWeight: FontWeight.bold,
+  void resultDialog(bool win) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+          child: Text(
+            win ? 'WINNER' : 'TRY AGAIN',
+            style: const TextStyle(
+              fontSize: 50,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
+        backgroundColor: win ? Colors.green : Colors.red,
       ),
-      backgroundColor: Colors.green,
     );
   }
 
@@ -87,7 +41,7 @@ class _QuizPageState extends State<QuizPage> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  questionBank.getQuestionText(questionNumber),
+                  questionBank.getQuestionText(),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 25.0,
@@ -111,8 +65,16 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 ),
                 onPressed: () {
-                  checkAnswer(questionNumber, true);
-                  setQuestionCounter();
+                  setState(() {
+                    if (questionBank.getQuestionNumber() ==
+                        questionBank.getQuestionBankLength() - 1) {
+                      questionBank.checkAnswer(true);
+                      resultDialog(questionBank.getResult());
+                    } else {
+                      questionBank.checkAnswer(true);
+                      questionBank.nextQuestion();
+                    }
+                  });
                 },
               ),
             ),
@@ -130,8 +92,16 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 ),
                 onPressed: () {
-                  checkAnswer(questionNumber, false);
-                  setQuestionCounter();
+                  setState(() {
+                    if (questionBank.getQuestionNumber() ==
+                        questionBank.getQuestionBankLength() - 1) {
+                      questionBank.checkAnswer(false);
+                      resultDialog(questionBank.getResult());
+                    } else {
+                      questionBank.checkAnswer(false);
+                      questionBank.nextQuestion();
+                    }
+                  });
                 },
               ),
             ),
@@ -140,7 +110,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(10),
             height: 50,
             child: Row(
-              children: userAnswers,
+              children: questionBank.userAnswers,
             ),
           ),
         ],
