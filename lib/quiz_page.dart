@@ -66,10 +66,10 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    if (questionBank.getQuestionNumber() ==
-                        questionBank.getQuestionBankLength() - 1) {
+                    if (questionBank.isFinished()) {
                       questionBank.checkAnswer(true);
                       resultDialog(questionBank.getResult());
+                      questionBank.clearAnswers();
                     } else {
                       questionBank.checkAnswer(true);
                       questionBank.nextQuestion();
@@ -93,10 +93,10 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    if (questionBank.getQuestionNumber() ==
-                        questionBank.getQuestionBankLength() - 1) {
+                    if (questionBank.isFinished()) {
                       questionBank.checkAnswer(false);
                       resultDialog(questionBank.getResult());
+                      questionBank.clearAnswers();
                     } else {
                       questionBank.checkAnswer(false);
                       questionBank.nextQuestion();
@@ -110,6 +110,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(10),
             height: 50,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: questionBank.userAnswers,
             ),
           ),

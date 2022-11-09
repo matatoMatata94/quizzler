@@ -72,18 +72,29 @@ class QuizBrain {
     }
   }
 
+  bool isFinished() {
+    if (getQuestionNumber() == getQuestionBankLength() - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void clearAnswers() {
+    userAnswers = [];
+  }
+
   bool getResult() {
     if (counterRightAnswers > counterWrongAnswers) {
       _questionNumber = 0;
       counterRightAnswers = 0;
       counterWrongAnswers = 0;
-      userAnswers.clear();
       return true;
     } else {
       _questionNumber = 0;
       counterRightAnswers = 0;
       counterWrongAnswers = 0;
-      userAnswers.clear();
+
       return false;
     }
   }
